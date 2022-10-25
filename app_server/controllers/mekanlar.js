@@ -55,12 +55,6 @@ const mekanBilgisi = (req, res, next) => {
                 tarih: "20 Ekim 2022",
                 yorumMetni: "Kahveler iyi",
             }, ],
-            yorumlar: [{
-                yorumYapan: "Sarvar Musazade",
-                puan: "4",
-                tarih: "20 Ekim 2022",
-                yorumMetni: "Kahveler iyi",
-            }, ],
         },
     });
 };
