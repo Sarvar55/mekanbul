@@ -41,12 +41,12 @@ const mekanBilgisi = (req, res, next) => {
             saatler: [{
                     gunler: "Pazartesi-Cuma",
                     acilis: "9:00-23:00",
-                    kapali: "false",
+                    kapali: false,
                 },
                 {
                     gunler: "Pazartesi-Cuma",
                     acilis: "9:00-23:00",
-                    kapali: "false",
+                    kapali: false,
                 },
             ],
             yorumlar: [{
