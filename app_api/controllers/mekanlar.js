@@ -37,8 +37,6 @@ const mekanlariListele = async(req, res) => {
                 ...geoOptions,
             },
         }, ]);
-        console.log(sonuc);
-
         const mekanlar = sonuc.map((mekan) => {
             const { ad, adres, puan, imkanlar, _id, mesafe } = mekan;
             return {
