@@ -6,7 +6,7 @@ cevrimler = (() => {
     var radyan2Kilometre = (radyan) => parseFloat(radyan * dunyaYariCapi);
     var kilometre2Radyan = (mesafe) => parseFloat(mesafe / dunyaYariCapi);
     return {
-        radyan2Kilometre: radyan2Kilometre,
+        radyan2Kilometre,
         kilometre2Radyan,
     };
 })();
@@ -37,11 +37,12 @@ const mekanlariListele = async(req, res) => {
                 ...geoOptions,
             },
         }, ]);
+        console.log(sonuc);
 
         const mekanlar = sonuc.map((mekan) => {
             const { ad, adres, puan, imkanlar, _id, mesafe } = mekan;
             return {
-                mesafe: cevrimler.radyan2Kilometre(mesafe),
+                mesafe: cevrimler.kilometre2Radyan(mesafe),
                 ad,
                 adres,
                 puan,
@@ -49,6 +50,7 @@ const mekanlariListele = async(req, res) => {
                 _id,
             };
         });
+        cevapOlustur(res, 200, mekanlar);
     } catch (error) {
         cevapOlustur(res, 404, error);
     }
