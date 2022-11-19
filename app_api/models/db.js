@@ -1,8 +1,9 @@
 var mongoose = require("mongoose");
-var dbUrl =
-    "mongodb+srv://Sarvar55:serDev2002@mekanbul.kuzfkhr.mongodb.net/?retryWrites=true&w=majority";
+var dbUrl = "mongodb://localhost/mekanbul";
+//"mongodb+srv://Sarvar55:serDev2002@mekanbul.kuzfkhr.mongodb.net/?retryWrites=true&w=majority";
 require("./mekanShema");
 mongoose.connect(dbUrl);
+
 mongoose.connection.on("connected", () => {
     console.log(dbUrl + "adresindeki veri tabanin abaglandi");
 });
@@ -12,7 +13,7 @@ mongoose.connection.on("error", () => {
 });
 
 mongoose.connection.on("disconnected", () => {
-    console.log("BAglanti kesilidi");
+    console.log("Baglanti kesilidi");
 });
 
 function close(msg, callback) {
