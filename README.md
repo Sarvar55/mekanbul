@@ -8,3 +8,11 @@
 
 [3. Bir Mekana Ait Belirli Bir Yorumu Getir](https://mekanbul5.servermusazade.repl.co/api/mekanlar/6378c3aa9b71cc91bee50577/yorumlar/6378c3b56df2de94fc5df7c8)
 ![3](/photos/yorumlar.png)
+
+# API Collections Test
+
+![Collection test](/photos/thunderTest.png)
+
+# API Mocha Test
+
+![Mocha test](/photos/cmdTest.png)
