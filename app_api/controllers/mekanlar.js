@@ -142,18 +142,22 @@ const mekanGuncelle = (req, res) => {
 const mekanSil = (req, res) => {
     var mekanid = req.params.mekanid;
     if (mekanid) {
-        Mekan.findByIdAndRemove(mekanid).exec(function(hata, gelenMekan) {
+        Mekan.findByIdAndRemove(mekanid).exec((hata, mekan) => {
             if (hata) {
                 cevapOlustur(res, 404, hata);
                 return;
+            } else if (mekan) {
+                cevapOlustur(res, 200, {
+                    durum: "Mekan Silindi!",
+                    "Silinen Mekan": mekan.ad,
+                });
+            } else {
+                cevapOlustur(res, 404, { mesaj: "mekan bulunamadi" });
             }
-            cevapOlustur(res, 200, { "durum": "Mekan Silindi!", "Silinen Mekan": gelenMekan.ad });
         });
     } else {
         cevapOlustur(res, 404, { mesaj: "mekanid bulunamadı" });
     }
-    apOlustur(res, 404, { mesaj: "mekanid zorunlu parmetre" });
-}
 };
 
 module.exports = {
