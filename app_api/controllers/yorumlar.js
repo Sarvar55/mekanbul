@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-const { head } = require("../routes");
 var Mekan = mongoose.model("mekan");
 
 const cevapOlustur = (res, status, content) => {
@@ -7,7 +6,7 @@ const cevapOlustur = (res, status, content) => {
 };
 
 const sonPuanHesapla = (mekan) => {
-    let i, yorumSayisi, ortalamaPuan, toplamPuan;
+    let yorumSayisi, ortalamaPuan, toplamPuan;
     const { yorumlar } = mekan;
     if (yorumlar && yorumlar.length > 0) {
         yorumSayisi = yorumlar.length;
@@ -55,7 +54,7 @@ const yorumOlustur = (req, res, mekan) => {
                 cevapOlustur(res, 400, hata);
             } else {
                 ortalamaGuncelle(mekan);
-                yorum = yorumlar[yorumlar.length - 1];
+                yorum = [...yorumlar].pop();
                 cevapOlustur(res, 201, yorum);
             }
         });
