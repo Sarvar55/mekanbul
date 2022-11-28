@@ -142,13 +142,15 @@ const mekanGuncelle = (req, res) => {
 const mekanSil = (req, res) => {
     const { mekanid } = req.params;
     if (req.params && mekanid) {
-        Mekan.deleteOne({ _id: mekanid }, (err, mekan) => {
+        Mekan.deleteOne({ _id: mekanid }, (err, result) => {
             if (err) {
                 cevapOlustur(res, 400, err);
-            } else {
+            } else if (result.acknowledged && result.deletedCount == 1) {
                 cevapOlustur(res, 200, {
                     mesaj: `${mekanid} idsine sahip mekan basari ile silindi`,
                 });
+            } else {
+                cevapOlustur(res, 404, { mesaj: "silinicek mekan bulunamadi" });
             }
         });
     } else {
