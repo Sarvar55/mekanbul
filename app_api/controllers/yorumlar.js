@@ -27,6 +27,7 @@ const sonPuanHesapla = (mekan) => {
 };
 
 const ortalamaGuncelle = ({ _id }) => {
+    console.log(_id + "-> id burada");
     Mekan.findById(_id)
         .select("puan yorumlar")
         .exec((hata, mekan) => {
@@ -54,7 +55,11 @@ const yorumOlustur = (req, res, mekan) => {
                 cevapOlustur(res, 400, hata);
             } else {
                 ortalamaGuncelle(mekan);
+                console.log(yorumlar + "before");
+                console.log("********************************");
                 yorum = [...yorumlar].pop();
+                console.log("after");
+                console.log(yorumlar);
                 cevapOlustur(res, 201, yorum);
             }
         });

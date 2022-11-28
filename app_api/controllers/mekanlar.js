@@ -140,22 +140,20 @@ const mekanGuncelle = (req, res) => {
 };
 
 const mekanSil = (req, res) => {
-    const { mekanid } = req.params;
-    if (req.params && mekanid) {
-        Mekan.deleteOne({ _id: mekanid }, (err, result) => {
-            if (err) {
-                cevapOlustur(res, 400, err);
-            } else if (result.acknowledged && result.deletedCount == 1) {
-                cevapOlustur(res, 200, {
-                    mesaj: `${mekanid} idsine sahip mekan basari ile silindi`,
-                });
-            } else {
-                cevapOlustur(res, 404, { mesaj: "silinicek mekan bulunamadi" });
+    var mekanid = req.params.mekanid;
+    if (mekanid) {
+        Mekan.findByIdAndRemove(mekanid).exec(function(hata, gelenMekan) {
+            if (hata) {
+                cevapOlustur(res, 404, hata);
+                return;
             }
+            cevapOlustur(res, 200, { "durum": "Mekan Silindi!", "Silinen Mekan": gelenMekan.ad });
         });
     } else {
-        cevapOlustur(res, 404, { mesaj: "mekanid zorunlu parmetre" });
+        cevapOlustur(res, 404, { mesaj: "mekanid bulunamadı" });
     }
+    apOlustur(res, 404, { mesaj: "mekanid zorunlu parmetre" });
+}
 };
 
 module.exports = {
