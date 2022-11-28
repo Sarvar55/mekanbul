@@ -27,7 +27,6 @@ const sonPuanHesapla = (mekan) => {
 };
 
 const ortalamaGuncelle = ({ _id }) => {
-    console.log(_id + "-> id burada");
     Mekan.findById(_id)
         .select("puan yorumlar")
         .exec((hata, mekan) => {
