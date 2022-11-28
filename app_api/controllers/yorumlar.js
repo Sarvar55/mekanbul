@@ -55,11 +55,7 @@ const yorumOlustur = (req, res, mekan) => {
                 cevapOlustur(res, 400, hata);
             } else {
                 ortalamaGuncelle(mekan);
-                console.log(yorumlar + "before");
-                console.log("********************************");
                 yorum = [...yorumlar].pop();
-                console.log("after");
-                console.log(yorumlar);
                 cevapOlustur(res, 201, yorum);
             }
         });
