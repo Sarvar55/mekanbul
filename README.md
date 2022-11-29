@@ -11,8 +11,6 @@
 
 # API Collections Test
 
-![Collection test](/photos/thunderTest.png)
-
 # API Mocha Test
 
 ![Mocha test](/photos/cmdTest.png)
