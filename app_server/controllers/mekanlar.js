@@ -3,7 +3,7 @@ var router = express.Router();
 const axios = require("axios");
 
 const apiSecenekleri = {
-    sunucu: "http://localhost:3000",
+    sunucu: "https://mekanbul.servermusazade.repl.co",
     apiYolu: "/api/mekanlar/",
 };
 
@@ -70,7 +70,6 @@ const detaySayfasiOlustur = (res, mekanDetaylari) => {
         enlem: mekanDetaylari.koordinat[0],
         boylam: mekanDetaylari.koordinat[1],
     };
-    console.log("buraya kadar geldim");
     res.render("mekanbilgisi", {
         mekanBaslik: mekanDetaylari.ad,
         mekanDetay: mekanDetaylari,
@@ -80,14 +79,12 @@ const detaySayfasiOlustur = (res, mekanDetaylari) => {
 const mekanBilgisi = (req, res) => {
     const { sunucu, apiYolu } = apiSecenekleri;
     const { mekanid } = req.params;
-
     axios
         .get(sunucu.concat(apiYolu) + mekanid)
         .then((response) => {
             detaySayfasiOlustur(res, response.data);
         })
         .catch((error) => {
-            console.log(error);
             hataGoster(res, error);
         });
 };
