@@ -1,4 +1,4 @@
-[Yakindaki mekanlari listele](https://mekanbul.servermusazade.repl.co/api/mekanlar?enlem=37&boylam=35)
+[Yakindaki mekanlari listele](https://mekanbul.servermusazade.repl.co/?enlem=37&boylam=35)
 
 # MekanBul REST API
 
