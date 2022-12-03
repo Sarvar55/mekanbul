@@ -10,14 +10,11 @@ const sonPuanHesapla = (mekan) => {
     const { yorumlar } = mekan;
     if (yorumlar && yorumlar.length > 0) {
         yorumSayisi = yorumlar.length;
-        toplamPuan = 0;
         toplamPuan = yorumlar.reduce((total, yorum) => {
             return total + yorum.puan;
         }, 0);
-
         ortalamaPuan = parseInt(toplamPuan / yorumSayisi, 10);
         mekan.puan = ortalamaPuan;
-        console.log(ortalamaPuan);
         mekan.save((hata) => {
             if (hata) {
                 console.log(hata);

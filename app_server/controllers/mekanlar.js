@@ -1,65 +1,107 @@
 var express = require("express");
 var router = express.Router();
+const axios = require("axios");
 
-const anaSayfa = function(req, res, next) {
-    res.render("anasayfa", {
-        baslik: "AnaSayfa",
+const apiSecenekleri = {
+    sunucu: "http://localhost:3000",
+    apiYolu: "/api/mekanlar/",
+};
+
+const mesafeyiFormatla = ({ mesafe }) => {
+    let yeniMesafe, birim;
+    if (mesafe > 1) {
+        yeniMesafe = parseFloat(mesafe).toFixed(1);
+        birim = " km";
+    } else {
+        yeniMesafe = parseInt(mesafe * 1000, 10);
+        birim = " m";
+    }
+
+    return yeniMesafe.concat(birim);
+};
+
+const anaSayfaOlustur = (res, mekanListesi) => {
+    let mesaj;
+    if (!(mekanListesi instanceof Array)) {
+        mesaj = "API Hatasi:Bir seyler ters gitdi";
+        mekanListesi = [];
+    } else {
+        if (!mekanListesi.length) {
+            mesaj = "Civarda herhengi bir mekan yok";
+        }
+    }
+    res.render("anaSayfa", {
+        baslik: "Anasayfa",
         sayfaBaslik: {
             siteAd: "MekanBul",
             slogan: "Civardaki Makenlari kesfet",
         },
-        mekanlar: [{
-                ad: "Starbucks",
-                adres: "Centrum Garden AVM",
-                puan: "4",
-                imkanlar: ["Dünya Kahveleri", "Kekler", "Pastalar"],
-                mesafe: "10km",
-            },
-            {
-                ad: "Gloria Jeans",
-                adres: "Sdu Dogu Kampusu",
-                puan: "3",
-                imkanlar: ["Kahve", "Cay", "Pastal"],
-                mesafe: "5km",
-            },
-        ],
+        mekanlar: mekanListesi,
+        mesaj,
     });
 };
-const mekanBilgisi = (req, res, next) => {
-    res.render("mekanbilgisi", {
-        baslik: "Mekan Biligisi",
-        mekanBaslik: "Starbucks",
-        mekanDetay: {
-            ad: "StarBUcks",
-            adres: "Centrum Garden AVM",
-            puan: "4",
-            imkanlar: ["Dunya Kahveleri", "Kekler", "PAstalar"],
-            kordinatlar: {
-                enlem: "37.7",
-                boylam: "30.5",
+
+const anaSayfa = function(req, res) {
+    const { sunucu, apiYolu } = apiSecenekleri;
+    axios
+        .get(sunucu.concat(apiYolu), {
+            params: {
+                enlem: req.query.enlem,
+                boylam: req.query.boylam,
             },
-            saatler: [{
-                    gunler: "Pazartesi-Cuma",
-                    acilis: "9:00-23:00",
-                    kapali: false,
-                },
-                {
-                    gunler: "Pazartesi-Cuma",
-                    acilis: "9:00-23:00",
-                    kapali: false,
-                },
-            ],
-            yorumlar: [{
-                yorumYapan: "Sarvar Musazade",
-                puan: "4",
-                tarih: "20 Ekim 2022",
-                yorumMetni: "Kahveler iyi",
-            }, ],
-        },
+        })
+        .then((response) => {
+            mekanlar = response.data.map((mekan) => {
+                mesafe = mesafeyiFormatla(mekan);
+                return {
+                    ...mekan,
+                    mesafe,
+                };
+            });
+            anaSayfaOlustur(res, mekanlar);
+        })
+        .catch((error) => {
+            anaSayfaOlustur(res, error);
+            console.log(JSON.stringify(error));
+        });
+};
+const detaySayfasiOlustur = (res, mekanDetaylari) => {
+    mekanDetaylari.koordinat = {
+        enlem: mekanDetaylari.koordinat[0],
+        boylam: mekanDetaylari.koordinat[1],
+    };
+    console.log("buraya kadar geldim");
+    res.render("mekanbilgisi", {
+        mekanBaslik: mekanDetaylari.ad,
+        mekanDetay: mekanDetaylari,
     });
+};
+
+const mekanBilgisi = (req, res) => {
+    const { sunucu, apiYolu } = apiSecenekleri;
+    const { mekanid } = req.params;
+    console.log(mekanid);
+    axios
+        .get(sunucu.concat(apiYolu) + mekanid)
+        .then((response) => {
+            detaySayfasiOlustur(res, response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+            hataGoster(res, error);
+        });
 };
 const yorumEkle = (req, res, next) => {
     res.render("yorumekle", { title: "Yorum ekle" });
+};
+const hataGoster = (res, hata) => {
+    let mesaj;
+    if (hata.response.status == 404) mesaj = "404 Sayfa bulunamadi";
+    else mesaj = hata.response.status + "hatasi";
+    res.status(hata.response.status);
+    res.render("error", {
+        mesaj,
+    });
 };
 
 module.exports = {
