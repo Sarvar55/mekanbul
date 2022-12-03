@@ -80,7 +80,7 @@ const detaySayfasiOlustur = (res, mekanDetaylari) => {
 const mekanBilgisi = (req, res) => {
     const { sunucu, apiYolu } = apiSecenekleri;
     const { mekanid } = req.params;
-    console.log(mekanid);
+
     axios
         .get(sunucu.concat(apiYolu) + mekanid)
         .then((response) => {
