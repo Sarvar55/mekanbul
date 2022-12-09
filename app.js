@@ -1,6 +1,7 @@
 var createError = require("http-errors");
 var model = require("./app_api/models/db");
 var express = require("express");
+var session = require("express-session");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -13,6 +14,16 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "app_server", "views"));
 app.set("view engine", "pug");
+app.use(
+    session({
+        secret: "gizli",
+        coockie: {
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+        resave: true,
+        saveUninitialized: true,
+    })
+);
 
 app.use(logger("dev"));
 app.use(express.json());

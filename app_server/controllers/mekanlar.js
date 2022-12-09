@@ -2,8 +2,8 @@ var express = require("express");
 const axios = require("axios");
 
 var apiSecenekleri = {
-    // sunucu: "http://localhost:3000",
-    sunucu: "https://mekanbul.servermusazade.repl.co",
+    sunucu: "http://localhost:3000",
+    //sunucu: "https://mekanbul.servermusazade.repl.co",
     apiYolu: "/api/mekanlar/",
 };
 
@@ -92,6 +92,7 @@ const mekanBilgisi = (req, res) => {
     axios
         .get(sunucu.concat(apiYolu) + mekanid)
         .then((response) => {
+            req.session.mekanAdi = response.data.ad;
             detaySayfasiOlustur(res, response.data);
         })
         .catch((hata) => {
@@ -100,11 +101,44 @@ const mekanBilgisi = (req, res) => {
 };
 
 const yorumEkle = function(req, res, next) {
-    res.render("yorumekle", { title: "Yorum Ekle" });
+    let mekanAdi = req.session.mekanAdi;
+    let mekanid = req.params.mekanid;
+    if (!mekanAdi) {
+        res.redirect("/mekan/" + mekanid);
+    } else {
+        res.render("yorumekle", {
+            baslik: mekanAdi + " mekanina yorum Ekle",
+        });
+    }
+};
+
+const yorummuEkle = (req, res) => {
+    let gonderilenYorum;
+    const { mekanid } = req.params;
+    if (!req.body.adsoyad || !req.body.yorum) {
+        res.redirect("/mekan/" + mekanid + "/yorum/yeni?hata=evet");
+    } else {
+        const { adsoyad, puan, yorum } = req.body;
+        gonderilenYorum = {
+            yorumYapan: adsoyad,
+            puan,
+            yorumMetni: yorum,
+        };
+        const { sunucu, apiYolu } = apiSecenekleri;
+        axios
+            .post(`${sunucu}${apiYolu}${mekanid}/yorumlar`, gonderilenYorum)
+            .then((response) => {
+                res.redirect("/mekan/".concat(mekanid));
+            })
+            .catch((err) => {
+                hataGoster(req, res, err);
+            });
+    }
 };
 
 module.exports = {
     anaSayfa,
     mekanBilgisi,
     yorumEkle,
+    yorummuEkle,
 };
