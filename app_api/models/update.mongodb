@@ -1,6 +1,6 @@
 const database = 'mekanbul';
 use(database);
-db.mekanlar.updateOne({"ad":"Gloria Jeans"},
+db.mekanlar.updateOne({"ad":"Mekan"},
   {$push: {"yorumlar": 
     {
       "_id": ObjectId(),
