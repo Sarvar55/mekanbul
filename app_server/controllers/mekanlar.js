@@ -113,7 +113,7 @@ const yorumEkle = function(req, res, next) {
     }
 };
 
-const yorumumuEkle = (req, res) => {
+const yorummumuEkle = (req, res) => {
     let gonderilenYorum;
     const { mekanid } = req.params;
     if (!req.body.adsoyad || !req.body.yorum) {
@@ -141,5 +141,5 @@ module.exports = {
     anaSayfa,
     mekanBilgisi,
     yorumEkle,
-    yorumumuEkle,
+    yorummumuEkle,
 };
