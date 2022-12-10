@@ -17,7 +17,7 @@ app.set("view engine", "pug");
 app.use(
     session({
         secret: "gizli",
-        coockie: {
+        cookie: {
             maxAge: 1000 * 60 * 60 * 24,
         },
         resave: true,
