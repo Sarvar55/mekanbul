@@ -2,28 +2,29 @@ const database = 'mekanbul';
 use(database);
 db.mekanlar.insertOne(
 {
-  "ad": "Mekan",
-  "adres": "Isparta",
-  "puan": 2,
+  "ad": "Starbucks",
+  "adres": "Centrum Garden",
+  "puan": 5,
   "imkanlar": [
+    "çay",
     "kahve",
     "pasta"
   ],
   "koordinat": [
-    35.83226584629666,
-    33.524732239878013
+    37.83226584629666,
+    30.524732239878013
   ],
   "saatler": [
     {
       "gunler": "Pazartesi-Cuma",
-      "acilis": "11:00",
+      "acilis": "9:00",
       "kapanis": "23:00",
       "kapali": false
     },
     {
       "gunler": "Cumartesi-Pazar",
-      "acilis": "10:00",
-      "kapanis": "18:00",
+      "acilis": "11:00",
+      "kapanis": "17:00",
       "kapali": false
     }
   ]

@@ -1,14 +1,14 @@
 var createError = require("http-errors");
-var model = require("./app_api/models/db");
-var express = require("express");
+require("./app_api/models/db");
 var session = require("express-session");
+var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
 var indexRouter = require("./app_server/routes/index");
+var apiRouter = require("./app_api/routes/index");
 var usersRouter = require("./app_server/routes/users");
-var apiRouter = require("./app_api/routes/index"); // bu rotayi verdikden sonra bu rotay kullanacagimiz soylemeliyizi
+
 var app = express();
 
 // view engine setup
@@ -17,14 +17,11 @@ app.set("view engine", "pug");
 app.use(
     session({
         secret: "gizli",
-        coockie: {
-            maxAge: 1000 * 60 * 60 * 24,
-        },
+        cookie: { maxAge: 1000 * 60 * 60 * 24 },
         resave: true,
         saveUninitialized: true,
     })
 );
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
