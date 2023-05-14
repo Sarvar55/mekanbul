@@ -1,0 +1,28 @@
+extends layout
+
+block content
+    #banner.page-header 
+        .row 
+            .col-lg-6
+                h1 
+                    | #{title}
+                    small &nbsp; MekanBul'a Kayıt Ol!
+
+    .row 
+        .col-xs-12.col-md-6 
+            form.form-horizontal(action='' method='POST' role='form' id='signup')
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='adsoyad') Ad Soyad 
+                    .col-xs-12.col-sm-10 
+                        input#adsoyad.form-control(name='adsoyad')
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='eposta') E-posta 
+                    .col-xs-12.col-sm-10 
+                        input#eposta.form-control(name='eposta')
+                .form-group 
+                    label.col-xs-10.col-sm-2.control-label(for='sifre') Şifre 
+                    .col-xs-12.col-sm-10 
+                        input#sifre.form-control(name='sifre')
+                button.btn.btn-default.pull-right() Kayıt Ol
+        .col-xs-12.col-md-4
+

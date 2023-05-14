@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    .row.page-header
+        h1=kullanici.adsoyad + " isimli kullanici Hosgeldiniz"
+        .panel-body 
+            p=kullanici._id
+            p=kullanici.adsoyad 
+            p=kullanici.eposta  
+            p=kullanici.hash
+

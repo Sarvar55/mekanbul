@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    #banner.page-header 
+        .row 
+            .col-lg-6
+                h1 
+                    | #{title}
+                    small &nbsp; MekanBul'a Giriş Yap!
+
+    .row
+        .col-xs-12.col-md-6 
+            form.form-horizontal(action='' method='POST' role='form' id='login')
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='eposta') E-posta 
+                    .col-xs-12.col-sm-10 
+                        input#eposta.form-control(name='eposta')
+                .form-group 
+                    label.col-xs-10.col-sm-2.control-label(for='sifre') Şifre 
+                    .col-xs-12.col-sm-10 
+                        input#sifre.form-control(name='sifre')
+                button.btn.btn-default.pull-right()  Giriş Yap
+                a.btn.link.link-danger.pull-right(href="/signup") Kayıt Ol
+        .col-xs-12.col-md-4   

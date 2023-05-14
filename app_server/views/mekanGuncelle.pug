@@ -1,0 +1,68 @@
+extends layout
+
+block content
+    #banner.page-header 
+        .row 
+            .col-lg-6
+                h1 
+                    | Mekan Güncelle Sayfası
+                    small &nbsp; Mekan Güncelle!
+
+    .row 
+        .col-xs-12.col-md-6 
+            form.form-horizontal(action='' method='POST' role='form' id='mekanGuncelle')
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='ad') Mekan Adı 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='ad',value=mekanDetay.ad)
+                .form-group 
+                    label.col-xs-10.col-sm-2.control-label(for='adres') Adres 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='adres',value=mekanDetay.adres)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='imkanlar') İmkanlar 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='imkanlar',value=imkanlar)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='enlem') Enlem 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='enlem',value=mekanDetay.koordinat.enlem)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='boylam') Boylam
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='boylam',value=mekanDetay.koordinat.boylam)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='gunler1') Günler-1 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='gunler1',value=mekanDetay.saatler[0].gunler)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='acilis1') Açılış-1 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='acilis1',value=mekanDetay.saatler[0].acilis)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='kapanis1') Kapanış-1 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='kapanis1',value=mekanDetay.saatler[0].kapanis)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='kapali1') Kapalı-1
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='kapali1',value=kapali1)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='gunler2') Günler-2 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='gunler2',value=mekanDetay.saatler[1].gunler)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='acilis2') Açılış-2 
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='acilis2',value=mekanDetay.saatler[1].acilis)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='kapanis2') Kapanış-2
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='kapanis2',value=mekanDetay.saatler[1].kapanis)
+                .form-group
+                    label.col-xs-10.col-sm-2.control-label(for='kapali2') Kapalı-2
+                    .col-xs-12.col-sm-10 
+                        input#name.form-control(name='kapali2',value=kapali2)
+                        -var mekanid=mekanDetay._id
+                button.btn.btn-info.pull-right.badge-default(href="/mekanguncelle/"+mekanid) Mekan Güncelle
+        .col-xs-12.col-md-4   

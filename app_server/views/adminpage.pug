@@ -3,12 +3,11 @@ include fonksiyonlar/yildiz
 
 block content
   #banner.page-header 
-    h1=user
     .row 
       .col-lg-6
         h1 
-          | #{sayfaBaslik.siteAd}
-          small &nbsp; #{sayfaBaslik.slogan}
+          | Admin Sayfası
+          small &nbsp; Mekanları Düzenle!
 
   .row 
   .error=mesaj
@@ -21,9 +20,17 @@ block content
             a(href='/mekan/'+mekanid) #{mekan.ad} 
             smal &nbsp;
             +puanOlustur(mekan.puan)
-          span.badge.pull-right.badge-default #{mekan.mesafe}
+            -var mekanid=mekan._id
+          a.btn.btn-primary.pull-right.badge-default(href="/mekansil/"+mekanid) Sil
+          b.btn.btn-light.pull-right.badge-default()   
+            -var mekanid=mekan._id
+          a.btn.btn-info.pull-right.badge-default(href="/mekanguncelle/"+mekanid) Güncelle 
+
           p.address #{mekan.adres}
           p
             each imkan in mekan.imkanlar
               span.label.label-warning #{imkan}
               | &nbsp;
+  .row
+    p
+    a.btn.btn-success.pull-right.badge-default(href="/mekanekle") Yeni Mekan

@@ -2,8 +2,8 @@ var express = require("express");
 const axios = require("axios");
 
 var apiSecenekleri = {
-    //sunucu: "http://localhost:3000",
-    sunucu: "https://mekanbul.servermusazade.repl.co",
+    sunucu: "http://localhost:3000",
+    //sunucu: "https://mekanbul.servermusazade.repl.co",
     apiYolu: "/api/mekanlar/",
 };
 
@@ -18,7 +18,7 @@ const mesafeyiFormatla = ({ mesafe }) => {
     }
     return yeniMesafe.concat(birim);
 };
-const anaSayfaOlustur = (res, mekanListesi) => {
+const anaSayfaOlustur = (res, mekanListesi, path = "anasayfa") => {
     let mesaj;
     if (!(mekanListesi instanceof Array)) {
         mesaj = "API HATASI: Bir şeyler ters gitti.";
@@ -28,8 +28,12 @@ const anaSayfaOlustur = (res, mekanListesi) => {
             mesaj = "Civarda herhangi bir mekan yok";
         }
     }
-    res.render("anasayfa", {
-        baslik: "Anasayfa",
+    let baslik = "Anasayfa";
+    if (new String(path).includes("adminpage")) {
+        baslik = "Admin Sayfasi";
+    }
+    res.render(path, {
+        baslik,
         sayfaBaslik: {
             siteAd: "MekanBul",
             slogan: "Civardaki Mekanları Keşfet!",
@@ -44,7 +48,6 @@ var detaySayfasiOlustur = (res, mekanDetaylari) => {
         enlem: mekanDetaylari.koordinat[0],
         boylam: mekanDetaylari.koordinat[1],
     };
-    console.log("aye ");
     res.render("mekanbilgisi", {
         mekanBaslik: mekanDetaylari.ad,
         mekanDetay: mekanDetaylari,
@@ -52,11 +55,12 @@ var detaySayfasiOlustur = (res, mekanDetaylari) => {
 };
 
 const hataGoster = (res, hata) => {
+    console.log(hata);
     let mesaj;
-    if (hata.response.status == 404) mesaj = "404, Sayfa Bulunamadı!";
+    if (!hata.response) mesaj = "401 ";
+    else if (hata.response.status == 404) mesaj = "404, Sayfa Bulunamadı!";
     else mesaj = hata.response.status + " hatası";
 
-    res.status(hata.response.status);
     res.render("error", {
         mesaj,
     });
@@ -90,6 +94,7 @@ const anaSayfa = (req, res) => {
 const mekanBilgisi = (req, res) => {
     const { sunucu, apiYolu } = apiSecenekleri;
     const { mekanid } = req.params;
+    console.log("men burdda");
     axios
         .get(sunucu.concat(apiYolu) + mekanid)
         .then((response) => {
@@ -126,14 +131,102 @@ const yorummumuEkle = (req, res) => {
             yorumMetni: yorum,
         };
         const { sunucu, apiYolu } = apiSecenekleri;
+        let config = {
+            headers: {
+                Authorization: "Bearer " + req.session.token,
+            },
+        };
         axios
-            .post(`${sunucu}${apiYolu}${mekanid}/yorumlar`, gonderilenYorum)
+            .post(`${sunucu}${apiYolu}${mekanid}/yorumlar`, gonderilenYorum, config)
             .then((response) => {
                 res.redirect("/mekan/".concat(mekanid));
             })
             .catch((err) => {
-                hataGoster(req, res, err);
+                hataGoster(res, err);
             });
+    }
+};
+const mekanGuncelle = async(req, res, next) => {
+    const { mekanid } = req.params;
+    const body = {
+        ad: req.body.ad,
+        adres: req.body.adres,
+        imkanlar: req.body.imkanlar,
+        enlem: req.body.enlem,
+        boylam: req.body.boylam,
+        gunler1: req.body.gunler1,
+        acilis1: req.body.acilis1,
+        kapanis1: req.body.kapanis1,
+        kapali1: req.body.kapali1,
+        gunler2: req.body.gunler2,
+        acilis2: req.body.acilis2,
+        kapanis2: req.body.kapanis2,
+        kapali2: req.body.kapali2,
+    };
+    const { sunucu, apiYolu } = apiSecenekleri;
+
+    try {
+        const response = await axios.put(`${sunucu}${apiYolu}${mekanid}`, body);
+        res.redirect("/adminpage");
+    } catch (error) {
+        console.log(error);
+    }
+};
+const mekanGuncelleSayfasi = async(req, res, next) => {
+    const { mekanid } = req.params;
+    const { sunucu, apiYolu } = apiSecenekleri;
+    try {
+        const response = await axios.get(`${sunucu}${apiYolu}${mekanid}`);
+        response.data.koordinat = {
+            enlem: response.data.koordinat[0],
+            boylam: response.data.koordinat[1],
+        };
+        let imkanlar = response.data.imkanlar.toString();
+        res.render("mekanGuncelle", {
+            mekanDetay: response.data,
+            imkanlar,
+            kapali1: new String(response.data.saatler[0].kapali).replace('""'),
+            kapali2: new String(response.data.saatler[1].kapali).replace('""'),
+        });
+    } catch (error) {}
+};
+
+const mekanEkleSayfasi = function(req, res, next) {
+    res.render("mekanEkle", { title: "Yeni Mekan Ekle Sayfası" });
+};
+
+const yeniMekanEkle = async(req, res) => {
+    const body = {
+        ad: req.body.ad,
+        adres: req.body.adres,
+        imkanlar: req.body.imkanlar,
+        enlem: req.body.enlem,
+        boylam: req.body.boylam,
+        gunler1: req.body.gunler1,
+        acilis1: req.body.acilis1,
+        kapanis1: req.body.kapanis1,
+        kapali1: req.body.kapali1,
+        gunler2: req.body.gunler2,
+        acilis2: req.body.acilis2,
+        kapanis2: req.body.kapanis2,
+        kapali2: req.body.kapali2,
+    };
+    const { sunucu, apiYolu } = apiSecenekleri;
+    console.log(body);
+    try {
+        const response = await axios.post(`${sunucu}${apiYolu}`, body);
+        res.redirect("/adminpage");
+    } catch (error) {}
+};
+
+const mekanSil = async(req, res) => {
+    const { mekanid } = req.params;
+    const { sunucu, apiYolu } = apiSecenekleri;
+    try {
+        const response = await axios.delete(`${sunucu}${apiYolu}${mekanid}`);
+        res.redirect("/adminpage");
+    } catch (error) {
+        res.redirect("/adminpage");
     }
 };
 
@@ -142,4 +235,10 @@ module.exports = {
     mekanBilgisi,
     yorumEkle,
     yorummumuEkle,
+    anaSayfaOlustur,
+    mekanGuncelle,
+    yeniMekanEkle,
+    mekanGuncelleSayfasi,
+    mekanSil,
+    mekanEkleSayfasi,
 };

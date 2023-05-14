@@ -1,5 +1,6 @@
 var createError = require("http-errors");
 require("./app_api/models/db");
+require("dotenv").config();
 var session = require("express-session");
 var express = require("express");
 var path = require("path");
@@ -8,6 +9,8 @@ var logger = require("morgan");
 var indexRouter = require("./app_server/routes/index");
 var apiRouter = require("./app_api/routes/index");
 var usersRouter = require("./app_server/routes/users");
+const passport = require("passport");
+require("./app_api/config/passport");
 
 var app = express();
 
@@ -18,7 +21,7 @@ app.use(
     session({
         secret: "gizli",
         cookie: { maxAge: 1000 * 60 * 60 * 24 },
-        resave: true,
+        resave: false,
         saveUninitialized: true,
     })
 );
@@ -26,16 +29,35 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", apiRouter);
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/api", (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header(
+        "Access-Control-Allow-Header",
+        "Origin, X-Requested-With, Content-Type,Accept, Authorization"
+    );
+    next();
+});
+
+app.use((err, req, res, next) => {
+    if (err.name === "UnauthorizedError") {
+        res.status(401).json({ hata: err.name + "" + err.message });
+    }
+});
+
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/", usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
 });
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // error handler
 app.use(function(err, req, res, next) {

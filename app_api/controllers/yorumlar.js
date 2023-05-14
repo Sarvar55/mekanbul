@@ -1,6 +1,6 @@
-var mongoose = require("mongoose");
-var Mekan = mongoose.model("mekan");
-
+const mongoose = require("mongoose");
+const Mekan = mongoose.model("mekan");
+const Kullanici = mongoose.model("kullanici");
 const cevapOlustur = (res, status, content) => {
     res.status(status).json(content);
 };
@@ -33,14 +33,14 @@ const ortalamaGuncelle = ({ _id }) => {
         });
 };
 
-const yorumOlustur = (req, res, mekan) => {
+const yorumOlustur = (req, res, mekan, kullaniciAdi) => {
     if (!mekan) {
         cevapOlustur(res, 404, { hata: "Mekan bulunamadi" });
     } else {
-        const { yorumYapan, puan, yorumMetni } = req.body;
+        const { puan, yorumMetni } = req.body;
         const { yorumlar } = mekan;
         mekan.yorumlar.push({
-            yorumYapan,
+            yorumYapan: kullaniciAdi,
             puan,
             yorumMetni,
             tarih: Date.now(),
@@ -58,24 +58,23 @@ const yorumOlustur = (req, res, mekan) => {
     }
 };
 
-const yorumlariListele = (req, res) => {};
-
 const yorumEkle = (req, res) => {
-    const { mekanid } = req.params;
-    if (mekanid) {
-        Mekan.findById(mekanid)
-            .select("yorumlar")
-            .exec((hata, mekan) => {
-                if (hata) {
-                    res.status(400).json(hata);
-                } else {
-                    yorumOlustur(req, res, mekan);
-                }
-            });
-    } else {
-        cevapOlustur(res, 404, { mesaj: "mekan bulunmadi" });
-    }
+    kullaniciGetir(req, res, (req, res, kullaniciAdi) => {
+        const { mekanid } = req.params;
+        if (mekanid) {
+            Mekan.findById(mekanid)
+                .select("yorumlar")
+                .exec((hata, mekan) => {
+                    if (hata) {
+                        res.status(400).json(hata);
+                    } else {
+                        yorumOlustur(req, res, mekan, kullaniciAdi);
+                    }
+                });
+        } else cevapOlustur(res, 404, { mesaj: "mekan bulunmadi" });
+    });
 };
+
 const yorumGetir = (req, res) => {
     const { mekanid, yorumid } = req.params;
     if (req.params && mekanid && yorumid) {
@@ -194,10 +193,26 @@ const yorumSil = (req, res) => {
         });
 };
 
+const kullaniciGetir = (req, res, callback) => {
+    if (req.auth && req.auth.eposta) {
+        const { eposta } = req.auth;
+
+        Kullanici.findOne({ eposta }).exec((err, result) => {
+            if (!result) {
+                return res.status(404).json({ hata: "Kullanici Bulunamadi" });
+            } else if (err) {
+                return res.status(404).json(hata);
+            }
+            callback(req, res, result.adsoyad);
+        });
+    } else {
+        return res.status(404).json({ hata: "kullanici Bulunamadi" });
+    }
+};
+
 module.exports = {
     yorumSil,
     yorumGuncelle,
     yorumEkle,
-    yorumlariListele,
     yorumGetir,
 };

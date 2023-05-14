@@ -8,7 +8,7 @@ html
     .navbar-default.navbar.navbar-fixed-top 
       .container 
         .navbar-header 
-          a.navbar-brand(href='/') MekanBul
+          a.navbar-brand(href='/?enlem=12&boylam=36') MekanBul
           button.navbar-toggle(type='button' data-toggle='collapse' data-target='#navbar-main')
             span.icon-bar 
             span.icon-bar 
@@ -17,6 +17,12 @@ html
           ul.nav.navbar-nav 
             li 
               a(href='/hakkinda') Hakkında
+            li 
+              a(href="/adminpage") Admin 
+            li 
+              a(href="/cikisyap") Cikis
+            li 
+              a(href="/kullanici") Kullanici Profili  
   .container 
     block content
     footer 

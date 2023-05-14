@@ -126,6 +126,7 @@ const mekanGuncelle = (req, res) => {
                         kapali: req.body.kapali2,
                     },
                 ];
+                console.log(mekan);
                 mekan.save((hata, mekan) => {
                     if (hata) {
                         cevapOlustur(res, 400, hata);
